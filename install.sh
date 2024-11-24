@@ -1,26 +1,26 @@
 #!/bin/bash
 
-# Define the directory structure
-INSTALL_DIR="$HOME/.shell_gpt"
+# Define the directory structure - with a BETTER NAME
+INSTALL_DIR="$HOME/.ai_tools"
 BIN_DIR="$INSTALL_DIR/bin"
-CONFIG_DIR="$INSTALL_DIR/.config/shell_gpt"
+CONFIG_DIR="$HOME/.config/shell_gpt"  # Keep this path for compatibility
 
 # Create the directory structure
 mkdir -p "$BIN_DIR"
 mkdir -p "$CONFIG_DIR"
 
-# Install pipx if not already installed
-if ! command -v pipx &> /dev/null; then
-    echo "Installing pipx..."
-    python3 -m pip install --user pipx
-    python3 -m pipx ensurepath
-    export PATH="$HOME/.local/bin:$PATH"
-fi
+# Install pipx properly in Replit environment
+echo "Installing pipx..."
+python3 -m pip install pipx --break-system-packages
+python3 -m pipx ensurepath --force
+
+# Ensure we can use pipx right away
+export PATH="$HOME/.local/bin:$PATH"
 
 # Install shell-gpt and aider-chat using pipx
 echo "Installing shell-gpt[litellm] and aider-chat using pipx..."
-pipx install shell-gpt[litellm]
-pipx install aider-chat
+pipx install "shell-gpt[litellm]" --force
+pipx install aider-chat --force
 
 # Create the aiderDS script
 cat > "$BIN_DIR/aiderDS" << 'EOL'
