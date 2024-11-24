@@ -16,11 +16,6 @@ python3 -m pip install shell-gpt[litellm] aider-chat
 # Ensure we can use pipx right away
 export PATH="$HOME/.local/bin:$PATH"
 
-# Install shell-gpt and aider-chat using pipx
-echo "Installing shell-gpt[litellm] and aider-chat using pipx..."
-pipx install "shell-gpt[litellm]" --force
-pipx install aider-chat --force
-
 # Create the aiderDS script
 cat > "$BIN_DIR/aiderDS" << 'EOL'
 #!/bin/bash
