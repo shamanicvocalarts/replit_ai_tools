@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Define the directory structure - with a BETTER NAME
+# Define the directory structure with better name
 INSTALL_DIR="$HOME/.ai_tools"
 BIN_DIR="$INSTALL_DIR/bin"
 CONFIG_DIR="$HOME/.config/shell_gpt"  # Keep this path for compatibility
@@ -9,10 +9,9 @@ CONFIG_DIR="$HOME/.config/shell_gpt"  # Keep this path for compatibility
 mkdir -p "$BIN_DIR"
 mkdir -p "$CONFIG_DIR"
 
-# Install pipx properly in Replit environment
-echo "Installing pipx..."
-python3 -m pip install pipx --break-system-packages
-python3 -m pipx ensurepath --force
+# Install directly without --user flag or pipx
+echo "Installing requirements..."
+python3 -m pip install shell-gpt[litellm] aider-chat
 
 # Ensure we can use pipx right away
 export PATH="$HOME/.local/bin:$PATH"
