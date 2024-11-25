@@ -177,7 +177,7 @@
 #tool-warning-color: #FFA500
 
 ## Set the color for assistant output (default: #0088ff)
-#assistant-output-color: #0088ff
+#assistant-output-color: xxx
 
 ## Set the color for the completion menu (default: terminal's default text color)
 #completion-menu-color: xxx
