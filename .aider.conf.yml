@@ -189,7 +189,7 @@
 #completion-menu-current-color: xxx
 
 ## Set the background color for the current item in the completion menu (default: terminal's default text color)
-#completion-menu-current-bg-color: #8080
+#completion-menu-current-bg-color: xxx
 
 ## Set the markdown code theme (default: default, other options include monokai, solarized-dark, solarized-light)
 code-theme: monokai
