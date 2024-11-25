@@ -1,27 +1,18 @@
 #!/bin/bash
 
-# Define the directory structure with better name
+# Create directory structure
 INSTALL_DIR="$HOME/.ai_tools"
 BIN_DIR="$INSTALL_DIR/bin"
-CONFIG_DIR="$HOME/.config/shell_gpt"  # Keep this path for compatibility
+CONFIG_DIR="$HOME/.config/shell_gpt"
 
-# Create the directory structure
 mkdir -p "$BIN_DIR"
 mkdir -p "$CONFIG_DIR"
 
-# Install directly without --user flag or pipx
-echo "Installing requirements..."
-python3 -m pip install shell-gpt[litellm] aider-chat
+# Install base packages through interactive shell
+echo "Installing AI tools..."
 
-# Ensure we can use pipx right away
-export PATH="$HOME/.local/bin:$PATH"
-
-# Create the aiderDS script
-cat > "$BIN_DIR/aiderDS" << 'EOL'
-#!/bin/bash
-aider --model openrouter/deepseek/deepseek-chat --map-tokens 1024 "$@"
-EOL
-chmod +x "$BIN_DIR/aiderDS"
+pip install --no-cache-dir shell-gpt[litellm]
+pip install --no-cache-dir aider-chat
 
 # Create the .sgptrc configuration file
 cat > "$CONFIG_DIR/.sgptrc" << 'EOL'
@@ -51,14 +42,8 @@ EOL
 # Create the set_alias.sh script
 cat > "$INSTALL_DIR/set_alias.sh" << 'EOL'
 #!/bin/bash
-
-# Set the aiderDS alias
-alias aiderDS="$HOME/.shell_gpt/bin/aiderDS"
-
-# Print the PATH environment variable to verify it is updated correctly
+alias aiderDS="$HOME/.ai_tools/bin/aiderDS"
 echo "Updated PATH: $PATH"
-
-# Check if the alias is set correctly
 if alias aiderDS >/dev/null 2>&1; then
     echo "aiderDS alias is set correctly."
 else
@@ -69,25 +54,19 @@ EOL
 # Create the set_api_key.sh script
 cat > "$INSTALL_DIR/set_api_key.sh" << 'EOL'
 #!/bin/bash
-
-# Check if the correct number of arguments is provided
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <provider>"
     exit 1
 fi
 
 PROVIDER="$1"
-
-# Define the path to the configuration file
 CONFIG_FILE="$HOME/.config/shell_gpt/.sgptrc"
 
-# Check if the provider is valid
 if [[ "$PROVIDER" != "openai" && "$PROVIDER" != "anthropic" && "$PROVIDER" != "openrouter" ]]; then
     echo "Invalid provider. Use 'openai', 'anthropic', or 'openrouter'."
     exit 1
 fi
 
-# Set the API key reference, API base URL, and use_litellm based on the provider
 case "$PROVIDER" in
     "openai")
         API_KEY_REF="\$OPENAI_API_KEY"
@@ -103,10 +82,8 @@ case "$PROVIDER" in
         ;;
 esac
 
-# Always set USE_LITELLM to true
 USE_LITELLM="true"
 
-# Update the configuration file
 sed -i "s|^OPENAI_API_KEY=.*|OPENAI_API_KEY=\"$API_KEY_REF\"|" "$CONFIG_FILE"
 sed -i "s|^API_BASE_URL=.*|API_BASE_URL=$API_BASE_URL|" "$CONFIG_FILE"
 sed -i "s|^USE_LITELLM=.*|USE_LITELLM=$USE_LITELLM|" "$CONFIG_FILE"
@@ -119,22 +96,15 @@ EOL
 # Create the set_default_model.sh script
 cat > "$INSTALL_DIR/set_default_model.sh" << 'EOL'
 #!/bin/bash
-
-# Check if the correct number of arguments is provided
 if [ "$#" -eq 0 ]; then
     echo "Usage: $0 <model>"
     exit 1
 fi
 
 MODEL="$1"
-
-# Define the path to the configuration file
 CONFIG_FILE="$HOME/.config/shell_gpt/.sgptrc"
-
-# Read the API_BASE_URL from the configuration file
 API_BASE_URL=$(grep -oP 'API_BASE_URL=\K[^ ]+' "$CONFIG_FILE")
 
-# Determine the provider based on the API_BASE_URL
 case "$API_BASE_URL" in
     "https://api.openai.com/v1")
         PROVIDER="openai"
@@ -151,56 +121,43 @@ case "$API_BASE_URL" in
         ;;
 esac
 
-# Prefix the model path with the provider
 MODEL_PATH="$PROVIDER/$MODEL"
-
-# Escape special characters in the model path
 ESCAPED_MODEL_PATH=$(echo "$MODEL_PATH" | sed 's/[\/&]/\\&/g')
-
-# Update the configuration file using a different delimiter
 sed -i "s|^DEFAULT_MODEL=.*|DEFAULT_MODEL=$ESCAPED_MODEL_PATH|" "$CONFIG_FILE"
 
 echo "DEFAULT_MODEL updated to $MODEL_PATH for $PROVIDER."
 EOL
 
 # Create the startup.sh script
-cat > "$INSTALL_DIR/startup.sh" << 'EOL'
+cat > "$INSTALL_DIR/startup.sh" << EOL
 #!/bin/bash
 # Create config directory if it doesn't exist
-mkdir -p ~/.config/shell_gpt
+mkdir -p $CONFIG_DIR
 
 # If ~/.config has the file, copy FROM ~/.config TO workspace
-if [ -f ~/.config/shell_gpt/.sgptrc ]; then
-    cp ~/.config/shell_gpt/.sgptrc .sgptrc
+if [ -f $CONFIG_DIR/.sgptrc ]; then
+    cp $CONFIG_DIR/.sgptrc $INSTALL_DIR/.sgptrc
 else
     # No ~/.config file - copy FROM workspace TO ~/.config
-    if [ -f .sgptrc ]; then
-        cp .sgptrc ~/.config/shell_gpt/.sgptrc
-        chmod 600 ~/.config/shell_gpt/.sgptrc
+    if [ -f $INSTALL_DIR/.sgptrc ]; then
+        cp $INSTALL_DIR/.sgptrc $CONFIG_DIR/.sgptrc
+        chmod 600 $CONFIG_DIR/.sgptrc
     fi
 fi
 
-# Create bin directory in workspace
-mkdir -p bin
+# Create bin directory
+mkdir -p "$BIN_DIR"
 
 # Create the aiderDS script
-cat > bin/aiderDS << 'INNEREOF'
+cat > "$BIN_DIR/aiderDS" << 'INNEREOF'
 #!/bin/bash
-aider --model openrouter/deepseek/deepseek-chat --map-tokens 1024 "$@"
+aider --model openrouter/deepseek/deepseek-chat --map-tokens 1024 "\$@"
 INNEREOF
-chmod +x bin/aiderDS
-export PATH="$PWD/bin:$PATH"
+chmod +x "$BIN_DIR/aiderDS"
+export PATH="$BIN_DIR:\$PATH"
 
 # Source the alias script
-source $PWD/set_alias.sh
-
-# Ensure the script is sourced in the current shell session
-if [ -z "$STARTUP_SOURCED" ]; then
-    export STARTUP_SOURCED=1
-    source $PWD/startup.sh
-else
-    echo "Startup configuration complete!"
-fi
+source "$INSTALL_DIR/set_alias.sh"
 EOL
 
 # Set execute permissions
@@ -209,10 +166,138 @@ chmod +x "$INSTALL_DIR/set_api_key.sh"
 chmod +x "$INSTALL_DIR/set_default_model.sh"
 chmod +x "$INSTALL_DIR/startup.sh"
 
-# Set the PATH environment variable
+# Create the aiderDS script
+cat > "$BIN_DIR/aiderDS" << 'EOL'
+#!/bin/bash
+aider --model openrouter/deepseek/deepseek-chat --map-tokens 1024 "$@"
+EOL
+chmod +x "$BIN_DIR/aiderDS"
+
+# Set the PATH
 export PATH="$BIN_DIR:$PATH"
 
 # Source the alias script
 source "$INSTALL_DIR/set_alias.sh"
+
+cat > aitoolsreadme.md << 'EOL'
+# AI Development Tools for Replit
+
+This script installs and configures AI-powered development tools to assist with coding and development in any Replit environment.
+
+## Installed Tools
+This installation sets up:
+- **Shell GPT** ([https://github.com/TheR1D/shell_gpt](https://github.com/TheR1D/shell_gpt)) - Command-line AI assistant
+- **Aider** ([https://github.com/Aider-AI/aider](https://github.com/Aider-AI/aider)) - AI pair programming in your terminal
+
+## Initial Setup
+
+After installation, first initialize the environment:
+```bash
+source ~/.ai_tools/startup.sh
+```
+This ensures all tools and scripts function correctly in Replit's environment.
+
+## Shell GPT
+
+Shell GPT is a command-line interface to interact with AI models. It allows you to get AI assistance directly in your terminal.
+
+### Configuration
+
+Before using Shell GPT, you need to configure your API provider and model. Two helper scripts are provided:
+
+#### set_api_key.sh
+This script configures which AI provider to use. Currently supported options are:
+
+- openai (OpenAI API)
+- anthropic (Anthropic/Claude API)
+- openrouter (OpenRouter API)
+
+Note: The script can be modified to support additional providers if needed.
+
+Usage:
+```bash
+source ~/.ai_tools/set_api_key.sh <provider>
+```
+
+Example:
+```bash
+source ~/.ai_tools/set_api_key.sh openrouter
+```
+
+#### set_default_model.sh
+This script sets which model to use by default. The available models depend on your configured provider.
+
+Usage:
+```bash
+source ~/.ai_tools/set_default_model.sh <model_name>
+```
+
+Example:
+```bash
+source ~/.ai_tools/set_default_model.sh deepseek/deepseek-chat
+```
+
+Common model options:
+- OpenAI: gpt-4, gpt-3.5-turbo
+- Anthropic: claude-3-opus-20240229, claude-3-sonnet-20240229
+- OpenRouter: [See available models](https://openrouter.ai/docs#models)
+
+### Using Shell GPT
+Once configured, you can use the sgpt command to interact with the AI:
+```bash
+sgpt "Write a function to calculate fibonacci numbers"
+```
+
+See the [Shell GPT documentation](https://github.com/TheR1D/shell_gpt#readme) for more usage examples.
+
+## Aider
+
+Aider is an AI pair programming tool that helps you edit code directly in your terminal through natural language conversations.
+
+To start an Aider session:
+```bash
+aider
+```
+
+The installation includes a preconfigured aiderDS command that uses the Deepseek model via OpenRouter with repository mapping enabled:
+```bash
+aiderDS
+```
+
+This is equivalent to:
+```bash
+aider --model openrouter/deepseek/deepseek-chat --map-tokens 1024
+```
+
+See the [Aider documentation](https://aider.chat/) for more details on how to have effective coding conversations.
+
+## API Keys
+
+The tools require API keys to function. These should be configured in the Replit Secrets tab with the following names:
+
+- `OPENAI_API_KEY` - For OpenAI API access
+- `ANTHROPIC_API_KEY` - For Anthropic/Claude API access
+- `OPENROUTER_API_KEY` - For OpenRouter API access
+
+Only configure the API key(s) for the provider(s) you plan to use.
+
+## Addendum
+
+If tools stop working (common after Replit restarts or environment changes):
+```bash
+source ~/.ai_tools/startup.sh
+```
+
+Remember to always use `source` with the configuration scripts to ensure they properly modify your current shell environment.
+
+for Shell-GPT, I have preconfigured some utility scripts that make it easy to switch models & providers without having to edit the conf files:
+```bash
+source ~/.ai_tools/set_api_key.sh openrouter
+source ~/.ai_tools/set_default_model.sh deepseek/deepseek-chat
+```
+
+
+EOL
+
 
 echo "Installation complete!"
