@@ -14,6 +14,9 @@ echo "Installing AI tools..."
 pip install --no-cache-dir shell-gpt[litellm]
 pip install --no-cache-dir aider-chat
 
+echo "Downloading Replit-optimized Aider config..."
+curl -o "/home/runner/workspace/.aider.conf.yml" https://raw.githubusercontent.com/shamanicvocalarts/replit_ai_tools/main/.aider.conf.yml
+
 # Create the .sgptrc configuration file
 cat > "$CONFIG_DIR/.sgptrc" << 'EOL'
 OPENAI_API_KEY="$OPENROUTER_API_KEY"
@@ -258,6 +261,11 @@ To start an Aider session:
 ```bash
 aider
 ```
+For Replit-optimized settings, run this on first run:
+```bash 
+aider --config /home/runner/workspace/.aider.conf.yml
+```
+the interface will now use a colour scheme more suited for replits shell
 
 The installation includes a preconfigured aiderDS command that uses the Deepseek model via OpenRouter with repository mapping enabled:
 ```bash
@@ -267,6 +275,11 @@ aiderDS
 This is equivalent to:
 ```bash
 aider --model openrouter/deepseek/deepseek-chat --map-tokens 1024
+```
+
+For Replit-optimized settings, use:
+```bash 
+aider --config .aider.conf.yml
 ```
 
 See the [Aider documentation](https://aider.chat/) for more details on how to have effective coding conversations.
