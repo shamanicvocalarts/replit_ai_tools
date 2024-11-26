@@ -1,6 +1,7 @@
 # AI Tools for Replit
 
 Welcome to the AI Tools for Replit!
+
 Current supported tooling: 
 AIDER - https://aider.chat
 
