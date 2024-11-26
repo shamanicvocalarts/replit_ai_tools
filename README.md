@@ -17,7 +17,7 @@ This will download and execute the installation script, setting up the AI tools 
 
 ## Usage
 
-Once installed, you can start using the AI tools by following the instructions provided in the tool's documentation.
+Once installed, you can start using the AI tools by following the instructions provided in the aitoolsreadme.md & the specific tool's documentation.
 
 ## Support
 
