@@ -10,6 +10,9 @@ You can install the tools to your Replit by running the following command:
 curl -o install.sh https://raw.githubusercontent.com/shamanicvocalarts/replit_ai_tools/main/install.sh && chmod +x install.sh && ./install.sh
 ```
 
+You must have replits python tools installed in the replit for this script to work. 
+You can easily install replits python tools by typing pip in the replit shell.
+
 This will download and execute the installation script, setting up the AI tools in your Replit environment.
 
 ## Usage
