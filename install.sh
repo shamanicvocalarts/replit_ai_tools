@@ -3,7 +3,7 @@
 # Create directory structure
 INSTALL_DIR="$HOME/.ai_tools"
 BIN_DIR="$INSTALL_DIR/bin"
-CONFIG_DIR="$HOME/.config/shell_gpt"
+# CONFIG_DIR="$HOME/.config/shell_gpt"
 
 mkdir -p "$BIN_DIR"
 mkdir -p "$CONFIG_DIR"
@@ -11,36 +11,36 @@ mkdir -p "$CONFIG_DIR"
 # Install base packages through interactive shell
 echo "Installing AI tools..."
 
-pip install --no-cache-dir shell-gpt[litellm]
+# pip install --no-cache-dir shell-gpt[litellm]
 pip install --no-cache-dir aider-chat
 
 echo "Downloading Replit-optimized Aider config..."
 curl -o "/home/runner/workspace/.aider.conf.yml" https://raw.githubusercontent.com/shamanicvocalarts/replit_ai_tools/main/.aider.conf.yml
 
 # Create the .sgptrc configuration file
-cat > "$CONFIG_DIR/.sgptrc" << 'EOL'
-OPENAI_API_KEY="$OPENROUTER_API_KEY"
-API_BASE_URL=https://openrouter.ai/api/v1
-CHAT_CACHE_LENGTH=100
-CHAT_CACHE_PATH=/tmp/shell_gpt/chat_cache
-CACHE_LENGTH=100
-CACHE_PATH=/tmp/shell_gpt/cache
-REQUEST_TIMEOUT=60
-DEFAULT_MODEL=openrouter/deepseek/deepseek-chat
-DEFAULT_COLOR=magenta
-DEFAULT_EXECUTE_SHELL_CMD=false
-DISABLE_STREAMING=false
-CODE_THEME=default
-OPENAI_FUNCTIONS_PATH=/home/runner/.config/shell_gpt/functions
-SHOW_FUNCTIONS_OUTPUT=false
-OPENAI_USE_FUNCTIONS=true
-USE_LITELLM=true
-ROLE_STORAGE_PATH=/home/runner/.config/shell_gpt/roles
-PRETTIFY_MARKDOWN=true
-SHELL_INTERACTION=true
-OS_NAME=auto
-SHELL_NAME=auto
-EOL
+# cat > "$CONFIG_DIR/.sgptrc" << 'EOL'
+# OPENAI_API_KEY="$OPENROUTER_API_KEY"
+# API_BASE_URL=https://openrouter.ai/api/v1
+# CHAT_CACHE_LENGTH=100
+# CHAT_CACHE_PATH=/tmp/shell_gpt/chat_cache
+# CACHE_LENGTH=100
+# CACHE_PATH=/tmp/shell_gpt/cache
+# REQUEST_TIMEOUT=60
+# DEFAULT_MODEL=openrouter/deepseek/deepseek-chat
+# DEFAULT_COLOR=magenta
+# DEFAULT_EXECUTE_SHELL_CMD=false
+# DISABLE_STREAMING=false
+# CODE_THEME=default
+# OPENAI_FUNCTIONS_PATH=/home/runner/.config/shell_gpt/functions
+# SHOW_FUNCTIONS_OUTPUT=false
+# OPENAI_USE_FUNCTIONS=true
+# USE_LITELLM=true
+# ROLE_STORAGE_PATH=/home/runner/.config/shell_gpt/roles
+# PRETTIFY_MARKDOWN=true
+# SHELL_INTERACTION=true
+# OS_NAME=auto
+# SHELL_NAME=auto
+# EOL
 
 # Create the set_alias.sh script
 cat > "$INSTALL_DIR/set_alias.sh" << 'EOL'
@@ -54,82 +54,82 @@ else
 fi
 EOL
 
-# Create the set_api_key.sh script
-cat > "$INSTALL_DIR/set_api_key.sh" << 'EOL'
-#!/bin/bash
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <provider>"
-    exit 1
-fi
+# # Create the set_api_key.sh script
+# cat > "$INSTALL_DIR/set_api_key.sh" << 'EOL'
+# #!/bin/bash
+# if [ "$#" -ne 1 ]; then
+#     echo "Usage: $0 <provider>"
+#     exit 1
+# fi
 
-PROVIDER="$1"
-CONFIG_FILE="$HOME/.config/shell_gpt/.sgptrc"
+# PROVIDER="$1"
+# CONFIG_FILE="$HOME/.config/shell_gpt/.sgptrc"
 
-if [[ "$PROVIDER" != "openai" && "$PROVIDER" != "anthropic" && "$PROVIDER" != "openrouter" ]]; then
-    echo "Invalid provider. Use 'openai', 'anthropic', or 'openrouter'."
-    exit 1
-fi
+# if [[ "$PROVIDER" != "openai" && "$PROVIDER" != "anthropic" && "$PROVIDER" != "openrouter" ]]; then
+#     echo "Invalid provider. Use 'openai', 'anthropic', or 'openrouter'."
+#     exit 1
+# fi
 
-case "$PROVIDER" in
-    "openai")
-        API_KEY_REF="\$OPENAI_API_KEY"
-        API_BASE_URL="https://api.openai.com/v1"
-        ;;
-    "anthropic")
-        API_KEY_REF="\$ANTHROPIC_API_KEY"
-        API_BASE_URL="https://api.anthropic.com/v1"
-        ;;
-    "openrouter")
-        API_KEY_REF="\$OPENROUTER_API_KEY"
-        API_BASE_URL="https://openrouter.ai/api/v1"
-        ;;
-esac
+# case "$PROVIDER" in
+#     "openai")
+#         API_KEY_REF="\$OPENAI_API_KEY"
+#         API_BASE_URL="https://api.openai.com/v1"
+#         ;;
+#     "anthropic")
+#         API_KEY_REF="\$ANTHROPIC_API_KEY"
+#         API_BASE_URL="https://api.anthropic.com/v1"
+#         ;;
+#     "openrouter")
+#         API_KEY_REF="\$OPENROUTER_API_KEY"
+#         API_BASE_URL="https://openrouter.ai/api/v1"
+#         ;;
+# esac
 
-USE_LITELLM="true"
+# USE_LITELLM="true"
 
-sed -i "s|^OPENAI_API_KEY=.*|OPENAI_API_KEY=\"$API_KEY_REF\"|" "$CONFIG_FILE"
-sed -i "s|^API_BASE_URL=.*|API_BASE_URL=$API_BASE_URL|" "$CONFIG_FILE"
-sed -i "s|^USE_LITELLM=.*|USE_LITELLM=$USE_LITELLM|" "$CONFIG_FILE"
+# sed -i "s|^OPENAI_API_KEY=.*|OPENAI_API_KEY=\"$API_KEY_REF\"|" "$CONFIG_FILE"
+# sed -i "s|^API_BASE_URL=.*|API_BASE_URL=$API_BASE_URL|" "$CONFIG_FILE"
+# sed -i "s|^USE_LITELLM=.*|USE_LITELLM=$USE_LITELLM|" "$CONFIG_FILE"
 
-echo "OPENAI_API_KEY updated to reference $API_KEY_REF for $PROVIDER."
-echo "API_BASE_URL updated to $API_BASE_URL for $PROVIDER."
-echo "USE_LITELLM updated to $USE_LITELLM for $PROVIDER."
-EOL
+# echo "OPENAI_API_KEY updated to reference $API_KEY_REF for $PROVIDER."
+# echo "API_BASE_URL updated to $API_BASE_URL for $PROVIDER."
+# echo "USE_LITELLM updated to $USE_LITELLM for $PROVIDER."
+# EOL
 
-# Create the set_default_model.sh script
-cat > "$INSTALL_DIR/set_default_model.sh" << 'EOL'
-#!/bin/bash
-if [ "$#" -eq 0 ]; then
-    echo "Usage: $0 <model>"
-    exit 1
-fi
+# # Create the set_default_model.sh script
+# cat > "$INSTALL_DIR/set_default_model.sh" << 'EOL'
+# #!/bin/bash
+# if [ "$#" -eq 0 ]; then
+#     echo "Usage: $0 <model>"
+#     exit 1
+# fi
 
-MODEL="$1"
-CONFIG_FILE="$HOME/.config/shell_gpt/.sgptrc"
-API_BASE_URL=$(grep -oP 'API_BASE_URL=\K[^ ]+' "$CONFIG_FILE")
+# MODEL="$1"
+# CONFIG_FILE="$HOME/.config/shell_gpt/.sgptrc"
+# API_BASE_URL=$(grep -oP 'API_BASE_URL=\K[^ ]+' "$CONFIG_FILE")
 
-case "$API_BASE_URL" in
-    "https://api.openai.com/v1")
-        PROVIDER="openai"
-        ;;
-    "https://api.anthropic.com/v1")
-        PROVIDER="anthropic"
-        ;;
-    "https://openrouter.ai/api/v1")
-        PROVIDER="openrouter"
-        ;;
-    *)
-        echo "Unknown API_BASE_URL. Cannot determine provider."
-        exit 1
-        ;;
-esac
+# case "$API_BASE_URL" in
+#     "https://api.openai.com/v1")
+#         PROVIDER="openai"
+#         ;;
+#     "https://api.anthropic.com/v1")
+#         PROVIDER="anthropic"
+#         ;;
+#     "https://openrouter.ai/api/v1")
+#         PROVIDER="openrouter"
+#         ;;
+#     *)
+#         echo "Unknown API_BASE_URL. Cannot determine provider."
+#         exit 1
+#         ;;
+# esac
 
-MODEL_PATH="$PROVIDER/$MODEL"
-ESCAPED_MODEL_PATH=$(echo "$MODEL_PATH" | sed 's/[\/&]/\\&/g')
-sed -i "s|^DEFAULT_MODEL=.*|DEFAULT_MODEL=$ESCAPED_MODEL_PATH|" "$CONFIG_FILE"
+# MODEL_PATH="$PROVIDER/$MODEL"
+# ESCAPED_MODEL_PATH=$(echo "$MODEL_PATH" | sed 's/[\/&]/\\&/g')
+# sed -i "s|^DEFAULT_MODEL=.*|DEFAULT_MODEL=$ESCAPED_MODEL_PATH|" "$CONFIG_FILE"
 
-echo "DEFAULT_MODEL updated to $MODEL_PATH for $PROVIDER."
-EOL
+# echo "DEFAULT_MODEL updated to $MODEL_PATH for $PROVIDER."
+# EOL
 
 # Create the startup.sh script
 cat > "$INSTALL_DIR/startup.sh" << EOL
@@ -138,15 +138,15 @@ cat > "$INSTALL_DIR/startup.sh" << EOL
 mkdir -p $CONFIG_DIR
 
 # If ~/.config has the file, copy FROM ~/.config TO workspace
-if [ -f $CONFIG_DIR/.sgptrc ]; then
-    cp $CONFIG_DIR/.sgptrc $INSTALL_DIR/.sgptrc
-else
-    # No ~/.config file - copy FROM workspace TO ~/.config
-    if [ -f $INSTALL_DIR/.sgptrc ]; then
-        cp $INSTALL_DIR/.sgptrc $CONFIG_DIR/.sgptrc
-        chmod 600 $CONFIG_DIR/.sgptrc
-    fi
-fi
+# if [ -f $CONFIG_DIR/.sgptrc ]; then
+#     cp $CONFIG_DIR/.sgptrc $INSTALL_DIR/.sgptrc
+# else
+#     # No ~/.config file - copy FROM workspace TO ~/.config
+#     if [ -f $INSTALL_DIR/.sgptrc ]; then
+#         cp $INSTALL_DIR/.sgptrc $CONFIG_DIR/.sgptrc
+#         chmod 600 $CONFIG_DIR/.sgptrc
+#     fi
+# fi
 
 # Create bin directory
 mkdir -p "$BIN_DIR"
@@ -165,8 +165,8 @@ EOL
 
 # Set execute permissions
 chmod +x "$INSTALL_DIR/set_alias.sh"
-chmod +x "$INSTALL_DIR/set_api_key.sh"
-chmod +x "$INSTALL_DIR/set_default_model.sh"
+# chmod +x "$INSTALL_DIR/set_api_key.sh"
+# chmod +x "$INSTALL_DIR/set_default_model.sh"
 chmod +x "$INSTALL_DIR/startup.sh"
 
 # Create the aiderDS script
@@ -189,7 +189,6 @@ This script installs and configures AI-powered development tools to assist with 
 
 ## Installed Tools
 This installation sets up:
-- **Shell GPT** ([https://github.com/TheR1D/shell_gpt](https://github.com/TheR1D/shell_gpt)) - Command-line AI assistant
 - **Aider** ([https://github.com/Aider-AI/aider](https://github.com/Aider-AI/aider)) - AI pair programming in your terminal
 
 ## Initial Setup
@@ -200,58 +199,6 @@ source ~/.ai_tools/startup.sh
 ```
 This ensures all tools and scripts function correctly in Replit's environment.
 
-## Shell GPT
-
-Shell GPT is a command-line interface to interact with AI models. It allows you to get AI assistance directly in your terminal.
-
-### Configuration
-
-Before using Shell GPT, you need to configure your API provider and model. Two helper scripts are provided:
-
-#### set_api_key.sh
-This script configures which AI provider to use. Currently supported options are:
-
-- openai (OpenAI API)
-- anthropic (Anthropic/Claude API)
-- openrouter (OpenRouter API)
-
-Note: The script can be modified to support additional providers if needed.
-
-Usage:
-```bash
-source ~/.ai_tools/set_api_key.sh <provider>
-```
-
-Example:
-```bash
-source ~/.ai_tools/set_api_key.sh openrouter
-```
-
-#### set_default_model.sh
-This script sets which model to use by default. The available models depend on your configured provider.
-
-Usage:
-```bash
-source ~/.ai_tools/set_default_model.sh <model_name>
-```
-
-Example:
-```bash
-source ~/.ai_tools/set_default_model.sh deepseek/deepseek-chat
-```
-
-Common model options:
-- OpenAI: gpt-4, gpt-3.5-turbo
-- Anthropic: claude-3-opus-20240229, claude-3-sonnet-20240229
-- OpenRouter: [See available models](https://openrouter.ai/docs#models)
-
-### Using Shell GPT
-Once configured, you can use the sgpt command to interact with the AI:
-```bash
-sgpt "Write a function to calculate fibonacci numbers"
-```
-
-See the [Shell GPT documentation](https://github.com/TheR1D/shell_gpt#readme) for more usage examples.
 
 ## Aider
 
@@ -303,11 +250,6 @@ source ~/.ai_tools/startup.sh
 
 Remember to always use `source` with the configuration scripts to ensure they properly modify your current shell environment.
 
-for Shell-GPT, I have preconfigured some utility scripts that make it easy to switch models & providers without having to edit the conf files:
-```bash
-source ~/.ai_tools/set_api_key.sh openrouter
-source ~/.ai_tools/set_default_model.sh deepseek/deepseek-chat
-```
 
 
 EOL
