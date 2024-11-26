@@ -231,6 +231,8 @@ aider --config .aider.conf.yml
 
 See the [Aider documentation](https://aider.chat/) for more details on how to have effective coding conversations.
 
+Please note, it is currently not reccomended to use playwright for aiders web scraping features. 
+
 ## API Keys
 
 The tools require API keys to function. These should be configured in the Replit Secrets tab with the following names:
