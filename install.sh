@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create directory structure
-INSTALL_DIR="$HOME/.ai_tools"
+INSTALL_DIR="$HOME/workspace/.ai_tools"
 BIN_DIR="$INSTALL_DIR/bin"
 # CONFIG_DIR="$HOME/.config/shell_gpt"
 
@@ -195,7 +195,7 @@ This installation sets up:
 
 After installation, first initialize the environment:
 ```bash
-source ~/.ai_tools/startup.sh
+source /startup.sh
 ```
 This ensures all tools and scripts function correctly in Replit's environment.
 
