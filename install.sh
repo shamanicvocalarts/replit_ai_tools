@@ -45,7 +45,7 @@ curl -o "/home/runner/workspace/.aider.conf.yml" https://raw.githubusercontent.c
 # Create the set_alias.sh script
 cat > "$INSTALL_DIR/set_alias.sh" << 'EOL'
 #!/bin/bash
-alias aiderDS="$HOME/.ai_tools/bin/aiderDS"
+alias aiderDS="$BIN_DIR/aiderDS"
 echo "Updated PATH: $PATH"
 if alias aiderDS >/dev/null 2>&1; then
     echo "aiderDS alias is set correctly."
