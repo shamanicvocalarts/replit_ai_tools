@@ -211,6 +211,7 @@ This is equivalent to:
 ```bash
 aider --model openrouter/deepseek/deepseek-chat --map-tokens 1024
 ```
+(Currently not working.) 
 
 For Replit-optimized settings, use:
 ```bash 
