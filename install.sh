@@ -134,19 +134,7 @@ EOL
 # Create the startup.sh script
 cat > "$INSTALL_DIR/startup.sh" << EOL
 #!/bin/bash
-# Create config directory if it doesn't exist
-#mkdir -p $CONFIG_DIR
 
-# If ~/.config has the file, copy FROM ~/.config TO workspace
-# if [ -f $CONFIG_DIR/.sgptrc ]; then
-#     cp $CONFIG_DIR/.sgptrc $INSTALL_DIR/.sgptrc
-# else
-#     # No ~/.config file - copy FROM workspace TO ~/.config
-#     if [ -f $INSTALL_DIR/.sgptrc ]; then
-#         cp $INSTALL_DIR/.sgptrc $CONFIG_DIR/.sgptrc
-#         chmod 600 $CONFIG_DIR/.sgptrc
-#     fi
-# fi
 
 # Create bin directory
 mkdir -p "$BIN_DIR"
