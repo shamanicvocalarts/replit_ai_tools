@@ -135,7 +135,7 @@ EOL
 cat > "$INSTALL_DIR/startup.sh" << EOL
 #!/bin/bash
 # Create config directory if it doesn't exist
-mkdir -p $CONFIG_DIR
+#mkdir -p $CONFIG_DIR
 
 # If ~/.config has the file, copy FROM ~/.config TO workspace
 # if [ -f $CONFIG_DIR/.sgptrc ]; then
