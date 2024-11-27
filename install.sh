@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create directory structure
-INSTALL_DIR="$HOME/workspace/.ai_tools"
+INSTALL_DIR="$HOME/workspace"
 BIN_DIR="$INSTALL_DIR/bin"
 # CONFIG_DIR="$HOME/.config/shell_gpt"
 
@@ -247,7 +247,7 @@ Only configure the API key(s) for the provider(s) you plan to use.
 
 If tools stop working (common after Replit restarts or environment changes):
 ```bash
-source ~/.ai_tools/startup.sh
+source /startup.sh
 ```
 
 Remember to always use `source` with the configuration scripts to ensure they properly modify your current shell environment.
